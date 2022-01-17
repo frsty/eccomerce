@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'category',
+    'accounts',
 ]
 
 MIDDLEWARE = [
@@ -70,7 +71,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'canasto_ideas.wsgi.application'
 
-
+AUTH_USER_MODEL ='accounts.Account'
 # Database
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases
 
