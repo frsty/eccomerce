@@ -53,7 +53,7 @@ class Account(AbstractBaseUser):
 
     #login con el mail
     USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS =['username','first_name','last_name']
+    REQUIRED_FIELDS = ['username','first_name','last_name']
 
     objects = MyAccountManager()
 
