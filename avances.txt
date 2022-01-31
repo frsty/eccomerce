@@ -1,0 +1,2 @@
+intalar 
+    pip install requests
