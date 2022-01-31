@@ -8,7 +8,7 @@ from django.core.exceptions import ObjectDoesNotExist
 def _cart_id(request):
     cart = request.session.session_key
     if not cart:
-        cart = request.session_key.create()
+        cart = request.session.create()
     return cart
 
 
@@ -68,6 +68,9 @@ def remove_cart_item(request, product_id):
 
 def cart(request, total=0, quantity=0, cart_items=None):
 
+    iva = 0
+    grand_total = 0
+
     try:
         cart = Cart.objects.get(cart_id = _cart_id(request))
         cart_items = CartItem.objects.filter(cart=cart, is_active=True)
@@ -94,5 +97,30 @@ def cart(request, total=0, quantity=0, cart_items=None):
     return render(request,'store/cart.html', context)
 
 
-def checkout(request):
-    return render(request, 'store/checkout.html')
+def checkout(request, total=0, quantity=0, cart_items=None):
+   
+   
+    try:
+        cart = Cart.objects.get(cart_id = _cart_id(request))
+        cart_items = CartItem.objects.filter(cart=cart, is_active=True)
+
+        for cart_item in cart_items:
+            total += round((cart_item.product.price * cart_item.quantity)/1.19)
+            quantity += cart_item.quantity
+
+        iva = round(total*0.19)
+        grand_total = total + iva
+
+
+    except ObjectDoesNotExist:
+        pass
+
+    context = {
+        'total' : total,
+        'quantity': quantity,
+        'cart_items' : cart_items,
+        'iva' : iva,
+        'grand_total': grand_total
+    }
+
+    return render(request,'store/checkout.html', context)

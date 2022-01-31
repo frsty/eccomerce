@@ -83,7 +83,7 @@
                 <div class="form-row">
 
                     <label for="">Descripcion</label>
-                    <textarea name="order_note" rows="2" class="form-control"></textarea>
+                    <textarea name="order_note" rows="2" class="form-control" style="resize: none;"></textarea>
 
                 </div>
 
@@ -103,9 +103,9 @@
                     <thead class="text-muted">
                     <tr class="small text-uppercase">
                       <th scope="col">Product</th>
-                      <th scope="col" width="120">Cantidad</th>
+                      <th scope="col">Cantidad</th>
                       <th scope="col" width="120">Precio</th>
-                      <th scope="col" class="text-right" width="200"> </th>
+                     
                     </tr>
                     </thead>
                     <tbody>
@@ -124,18 +124,7 @@
                             </figure>
                         </td>
                         <td>
-                            <!-- col.// -->
-                                        <div class="col">
-                                            <div class="input-group input-spinner">
-                                                <div class="input-group-prepend">
-                                                <a href="{% url 'remove_cart' cart_item.product.id %}" class="btn btn-light" type="button" id="button-plus"> <i class="fa fa-minus"></i> </a>
-                                                </div>
-                                                <input type="text" class="form-control"  value="{{cart_item.quantity}}">
-                                                <div class="input-group-append">
-                                                <a href="{% url 'add_cart' cart_item.product.id %}" class="btn btn-light" type="button" id="button-minus"> <i class="fa fa-plus"></i> </a>
-                                                </div>
-                                            </div> <!-- input-group.// -->
-                                        </div> <!-- col.// -->
+                            <label for="">{{ cart_item.quantity }}</label>
                         </td>
                         <td>
                             <div class="price-wrap">
@@ -143,16 +132,13 @@
                                 <small class="text-muted"> $ {{cart_item.product.price}} cada uno </small>
                             </div> <!-- price-wrap .// -->
                         </td>
-                        <td class="text-right">
-                        <a href="{% url 'remove_cart_item' cart_item.product.id %}" class="btn btn-danger"> Eliminar</a>
-                        </td>
                     </tr>
                     {% endfor %} 
                     </tbody>
                 </table>
 
 
-                <a href="./place-order.html" class="btn btn-primary btn-block">Ordenar compra</a>
+                <a href="#" class="btn btn-primary btn-block">Ordenar compra</a>
                 <a href="{% url 'store'%}" class="btn btn-light btn-block">Continua comprando</a>
             </div> <!-- card-body.// -->
             </div> <!-- card.// -->
