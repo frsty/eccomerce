@@ -66,6 +66,18 @@ def login(request):
         if user is not None:
 
             try:
+                cart = Cart.objects.get(cart_id=_cart_id(request))
+                is_cart_item_exists = CartItem.objects.filter(cart=cart).exists()
+                if is_cart_item_exists:
+                    cart_item = CartItem.objects.filter(cart=cart)
+                    for item in cart_item:
+                        item.user = user
+                        item.save()
+
+            except:
+                pass
+
+            try:
                 cart = Cart.objects.get(cart_id = _cart_id(request))
                 is_cart_item_exists = CartItem.objects.filter(cart=cart).exists()
                 if is_cart_item_exists:
@@ -75,7 +87,7 @@ def login(request):
                         item.save()
 
             except:
-                pass         
+                pass
 
 
             auth.login(request, user)
