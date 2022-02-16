@@ -18,30 +18,25 @@ def add_cart(request, product_id):
 
     current_user = request.user
 
+    #si esta logeado
     if current_user.is_authenticated:
         is_cart_item_exists = CartItem.objects.filter(product=product, user=current_user).exists()
 
         if is_cart_item_exists:
-            try:
-                cart_item = CartItem.objects.get(product=product, user  = current_user)
-                cart_item.quantity +=1
-                cart_item.save()
-
-            except CartItem.DoesNotExist:
-                cart_item = CartItem.objects.create(
-                        product = product,
-                        quantity = 1,
-                        user = current_user,
-                    )
-                cart_item.save()
-
+            cart_item = CartItem.objects.get(product=product, user=current_user) 
+            cart_item.quantity +=1
+            cart_item.save()
+        else:
+            cart_item = CartItem.objects.create(
+                product = product,
+                quantity = 1,
+                user = current_user ,
+            )
         return redirect('cart')
-
     else:
-
         try:
-            cart = Cart.objects.get(cart_id=_cart_id(request))
-
+            cart = Cart.objects.get(cart_id =_cart_id(request))
+        
         except Cart.DoesNotExist:
             cart = Cart.objects.create(
                 cart_id = _cart_id(request)
@@ -49,19 +44,19 @@ def add_cart(request, product_id):
 
         cart.save()
 
-        try:
-            cart_item = CartItem.objects.get(product = product, cart = cart)
-            cart_item.quantity +=1
-            cart_item.save()
+        is_cart_item_exists = CartItem.objects.filter(product=product, cart=cart).exists()
 
-        except CartItem.DoesNotExist:
+        if is_cart_item_exists:
+            cart_item = CartItem.objects.filter(product=product, cart=cart)
+
+        else:
             cart_item = CartItem.objects.create(
                 product = product,
                 quantity = 1,
                 cart = cart,
             )
-            cart_item.save()
 
+            cart_item.save()
         return redirect('cart')
 
 
