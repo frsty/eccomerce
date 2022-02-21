@@ -1,3 +1,4 @@
+from itertools import count
 from django.shortcuts import render, redirect
 from .forms import RegistrationForm
 from .models import Account
@@ -62,50 +63,68 @@ def login(request):
         password = request.POST['password']
 
         user = auth.authenticate(email=email, password=password)
-
+                    #prueba redireccion admin, staff
         if user is not None:
+            if user.is_active:
+                auth.login(request, user)
 
-            try:
-                cart = Cart.objects.get(cart_id=_cart_id(request))
-                is_cart_item_exists = CartItem.objects.filter(cart=cart).exists()
-                if is_cart_item_exists:
-                    cart_item = CartItem.objects.filter(cart=cart)
-                    for item in cart_item:
-                        item.user = user
-                        item.save()
+                if request.user.role == 'admin':
+                    
+                    return render(request,'administration/administracion.html')
+                
+                else:
 
-            except:
-                pass
+                    try:
+                        cart = Cart.objects.get(cart_id=_cart_id(request))
+                        is_cart_item_exists = CartItem.objects.filter(cart=cart).exists()
+                        if is_cart_item_exists:
+                            cart_item = CartItem.objects.filter(cart=cart)#filtro sin el usuario, sin login
 
-            try:
-                cart = Cart.objects.get(cart_id = _cart_id(request))
-                is_cart_item_exists = CartItem.objects.filter(cart=cart).exists()
-                if is_cart_item_exists:
-                    cart_item = CartItem.objects.filter(cart=cart)
-                    for item in cart_item:
-                        item.user = user
-                        item.save()
-
-            except:
-                pass
-
-
-            auth.login(request, user)
-            messages.success(request, 'has iniciado sesion exitosamente')
+                            #guardar en una list los product del cart
+                            productos = list()
+                            for item in cart_item:
+                                existing = item.product.all()
+                                productos.append(existing)
+                            
+                            print(productos)
+                            #guardar en una list los product del cart pero con filtro de usuario(login)
+                            #recorrer las lista y preguntar si hay elementos equivalentes
 
 
-            url = request.META.get('HTTP_REFERER')
-            try:
-                query = requests.utils.urlparse(url).query
+                            for item in cart_item:
+                                item.user = user
+                                item.save()
 
-                params = dict(x.split('=') for x in query.split('&'))
-                if 'next' in params:
-                    nextPage = params['next']
-                    return redirect(nextPage)
-            except:
-                return redirect('dashboard')
+                    except:
+                        pass
 
-            return redirect('dashboard')
+                    try:
+                        cart = Cart.objects.get(cart_id = _cart_id(request))
+                        is_cart_item_exists = CartItem.objects.filter(cart=cart).exists()
+                        if is_cart_item_exists:
+                            cart_item = CartItem.objects.filter(cart=cart)
+                            for item in cart_item:
+                                item.user = user
+                                item.save()
+
+                    except:
+                        pass
+
+                    messages.success(request, 'has iniciado sesion exitosamente')
+
+
+                    url = request.META.get('HTTP_REFERER')
+                    try:
+                        query = requests.utils.urlparse(url).query
+
+                        params = dict(x.split('=') for x in query.split('&'))
+                        if 'next' in params:
+                            nextPage = params['next']
+                            return redirect(nextPage)
+                    except:
+                        return redirect('dashboard')
+
+                    return redirect('dashboard')
         else:
             messages.error(request, 'las credenciales son incorrectas')
             return redirect('login')

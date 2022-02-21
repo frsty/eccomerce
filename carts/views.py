@@ -23,20 +23,20 @@ def add_cart(request, product_id):
         is_cart_item_exists = CartItem.objects.filter(product=product, user=current_user).exists()
 
         if is_cart_item_exists:
-            cart_item = CartItem.objects.get(product=product, user=current_user) 
+            cart_item = CartItem.objects.get(product=product, user=current_user)
             cart_item.quantity +=1
             cart_item.save()
         else:
             cart_item = CartItem.objects.create(
                 product = product,
                 quantity = 1,
-                user = current_user ,
+                user = current_user,
             )
         return redirect('cart')
     else:
         try:
             cart = Cart.objects.get(cart_id =_cart_id(request))
-        
+
         except Cart.DoesNotExist:
             cart = Cart.objects.create(
                 cart_id = _cart_id(request)

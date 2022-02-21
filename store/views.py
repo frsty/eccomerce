@@ -10,6 +10,7 @@ from carts.views import _cart_id
 
 
 # Create your views here.
+
 def store(request, category_slug=None):
     categories = None
     products = None

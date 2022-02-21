@@ -2,6 +2,12 @@ from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 
 # Create your models here.
+Roles = (
+    ('admin', 'ADMIN'),
+    ('client', 'CLIENT'),
+
+)
+
 class MyAccountManager(BaseUserManager):
     def create_user(self, first_name, last_name, username, email, password=None):
         if not email:
@@ -42,6 +48,7 @@ class Account(AbstractBaseUser):
     username = models.CharField(max_length=50, unique= True)
     email = models.CharField(max_length=50, unique=True)
     phone_number = models.CharField(max_length=50)
+    role = models.CharField(max_length=50, choices=Roles, default='client')
 
     #campos django
     date_joined = models.DateTimeField(auto_now_add=True)
@@ -66,3 +73,4 @@ class Account(AbstractBaseUser):
 
     def has_module_perms(self, add_label):
         return True
+

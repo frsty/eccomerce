@@ -14,3 +14,4 @@ class AccountAdmin(UserAdmin):
 
 # Register your models here.
 admin.site.register(Account,AccountAdmin)
+
